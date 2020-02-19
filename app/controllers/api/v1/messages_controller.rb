@@ -23,7 +23,7 @@ module Api
 
       def update
         @message.update( message_params )
-        if message.save
+        if @message.save
           json_response( @message, :no_content )
         else
           json_response( @message.errors.full_messages, :unprocessable_entity )
