@@ -53,7 +53,7 @@ RSpec.describe 'Messages API', type: :request do
       end
 
       it 'returns status code 201' do
-        expect(response).to have_http_status(201)
+        expect( response ).to have_http_status( 201 )
       end
     end
 
