@@ -6,6 +6,6 @@ class User < ApplicationRecord
   before_save :downcase_name
 
   def downcase_name
-    self.name = self.name.strip.downcase
+    self.name.strip.downcase
   end
 end
