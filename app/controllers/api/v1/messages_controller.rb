@@ -10,7 +10,11 @@ module Api
 
       def create
         message = Message.create!( message_params )
-        json_response( message, :created )
+        if message.save
+          json_response( message, :created )
+        else
+          json_response( message.errors.full_messages, :unprocessable_entity )
+        end
       end
 
       def show
@@ -19,12 +23,16 @@ module Api
 
       def update
         @message.update( message_params )
-        head :no_content
+        if message.save
+          json_response( @message, :no_content )
+        else
+          json_response( @message.errors.full_messages, :unprocessable_entity )
+        end
       end
 
       def destroy
         @message.destroy
-        head :no_content
+        json_response( 'Message deleted', :no_content )
       end
 
       private
