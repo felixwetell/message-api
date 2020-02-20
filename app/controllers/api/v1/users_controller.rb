@@ -11,7 +11,7 @@ module Api
       private
 
       def user_params
-        params.require( :user ).permit( :name, :password_digest )
+        params.permit( :name, :password, :password_confirmation )
       end
     end
   end
