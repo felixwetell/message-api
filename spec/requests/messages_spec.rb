@@ -1,6 +1,9 @@
 RSpec.describe 'Messages API', type: :request do
-  let!( :messages ) { create_list( :message, 10 ) }
+  let( :user ) { create( :user ) }
+  let!( :messages ) { create_list( :message, 10, author: user.name, user_id: user.id ) }
   let( :message_id ) { messages.first.id }
+
+  let( :headers ) { valid_headers }
 
   describe 'GET /api/v1/messages' do
     before { get '/api/v1/messages' }
@@ -43,13 +46,20 @@ RSpec.describe 'Messages API', type: :request do
   end
 
   describe 'POST /api/v1/messages' do
-    let( :valid_attributes ) { { title: 'New message', text: 'Saker som inte hänt', author: 'Felix Wetell' } }
+    let( :valid_attributes ) do
+      {
+          title: 'New message',
+          text: 'Saker som inte hänt',
+          author: user.name,
+          user_id: user.id
+      }.to_json
+    end
 
     context 'when the request is valid' do
-      before { post '/api/v1/messages', params: valid_attributes }
+      before { post '/api/v1/messages', params: valid_attributes, headers: headers }
 
       it 'creates a message' do
-        expect( JSON.parse( response.body )[ 'title' ] ).to eq( 'New message' )
+        expect( json[ 'title' ] ).to eq( 'New message' )
       end
 
       it 'returns status code 201' do
@@ -58,23 +68,28 @@ RSpec.describe 'Messages API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/api/v1/messages', params: { title: 'Foobar' } }
+      let( :invalid_attributes ) do
+        { title: 'Foobar' }.to_json
+      end
+      before { post '/api/v1/messages', params: invalid_attributes, headers: headers }
 
       it 'returns status code 422' do
         expect( response ).to have_http_status( 422 )
       end
 
       it 'returns a validation failure message' do
-        expect( response.body ).to match( "Validation failed: Text can't be blank, Author can't be blank" )
+        expect( response.body ).to match( /Text can't be blank/ )
       end
     end
   end
 
   describe 'PUT /api/v1/messages/:id' do
-    let( :valid_attributes ) { { title: 'Old message' } }
+    let( :valid_attributes ) do
+      { title: 'Old message' }.to_json
+    end
 
     context 'when the message exists' do
-      before { put "/api/v1/messages/#{ message_id }", params: valid_attributes }
+      before { put "/api/v1/messages/#{ message_id }", params: valid_attributes, headers: headers }
 
       it 'updates the message' do
         expect( response.body ).to be_empty
@@ -87,7 +102,7 @@ RSpec.describe 'Messages API', type: :request do
   end
 
   describe 'DELETE /api/v1/messages/:id' do
-    before { delete "/api/v1/messages/#{ message_id }" }
+    before { delete "/api/v1/messages/#{ message_id }", params: {}, headers: headers }
 
     it 'returns status code 204' do
       expect( response ).to have_http_status( 204 )

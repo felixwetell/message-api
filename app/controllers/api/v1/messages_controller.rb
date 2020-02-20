@@ -1,6 +1,7 @@
 module Api
   module V1
     class MessagesController < ApplicationController
+      skip_before_action :authorize_request, only: [ :index, :show ]
       before_action :fetch_message, only: [ :show, :update, :destroy ]
 
       def index
@@ -9,12 +10,9 @@ module Api
       end
 
       def create
-        message = Message.create!( message_params )
-        if message.save
-          json_response( message, :created )
-        else
-          json_response( message.errors.full_messages, :unprocessable_entity )
-        end
+        message_params[ 'author' ] = current_user.name
+        @message = current_user.messages.create!( message_params )
+        json_response( @message, :created )
       end
 
       def show
