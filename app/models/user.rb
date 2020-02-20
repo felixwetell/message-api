@@ -5,6 +5,8 @@ class User < ApplicationRecord
 
   before_save :downcase_name
 
+  has_many :messages, foreign_key: :user_id
+
   def downcase_name
     self.name = self.name.downcase.delete( ' ' )
   end
