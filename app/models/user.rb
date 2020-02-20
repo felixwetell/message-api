@@ -1,7 +1,8 @@
 class User < ApplicationRecord
-  validates_presence_of :name
-  validates_uniqueness_of :name, case_sensitive: false
   has_secure_password
+
+  validates_presence_of :name, :password_digest
+  validates_uniqueness_of :name, case_sensitive: false
 
   before_save :downcase_name
 
