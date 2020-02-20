@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Authentication' do
   describe 'POST /auth/login' do
     let!( :user ) { create( :user ) }
-    let( :headers ) { valid_headers.expect( 'Authorization' ) }
+    let( :headers ) { valid_headers.except( 'Authorization' ) }
     let( :valid_credentials ) do
       {
           name: user.name,
@@ -13,7 +13,7 @@ RSpec.describe 'Authentication' do
     let( :invalid_credentials ) do
       {
           name: Faker::Internet.name,
-          password: Faker::Internet.password
+          password: Faker::Lorem.word
       }.to_json
     end
 
@@ -29,7 +29,7 @@ RSpec.describe 'Authentication' do
       before { post '/auth/login', params: invalid_credentials, headers: headers }
 
       it 'returns a failure message' do
-        expect( json[ 'auth_token' ] ).to match( /Invalid credentials/ )
+        expect( json[ 'message' ] ).to match( /Invalid credentials/ )
       end
     end
   end

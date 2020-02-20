@@ -1,7 +1,7 @@
 class AuthenticationController < ApplicationController
-  skip_before_action :authorize_request, only: :autenticate
+  skip_before_action :authorize_request, only: :authenticate
 
-  def autenticate
+  def authenticate
     auth_token = AuthenticateUser.new( auth_params[ :name ], auth_params[ :password ] ).call
     json_response( auth_token: auth_token )
   end
