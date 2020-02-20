@@ -3,11 +3,9 @@ module Api
     class UsersController < ApplicationController
       def create
         user = User.create!( user_params )
-        if user.save
-          json_response( user, :created )
-        else
-          json_response( user.errors.full_messages, :unprocessable_entity )
-        end
+        auth_token = AuthenticateUser.new( user.name, user.password ).call
+        response = { message: Notice.account_created, auth_token: auth_token }
+        json_response( response, :created )
       end
 
       private
