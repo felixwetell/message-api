@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Users API' do
   let( :user ) { build( :user ) }
-  let( :headers ) { valid_headers.expect( 'Authorization' ) }
+  let( :headers ) { valid_headers.except( 'Authorization' ) }
   let( :valid_attributes ) do
     attributes_for( :user, password_confirmation: user.password )
   end
@@ -16,7 +16,7 @@ RSpec.describe 'Users API' do
       end
       
       it 'returns success notice' do
-        expect( json[ 'message' ] ).to match(/Account created successfully/)
+        expect( json[ 'message' ] ).to match(/User created successfully/)
       end
 
       it 'returns authentication token' do
