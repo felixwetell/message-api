@@ -61,7 +61,8 @@ RSpec.describe 'Messages API', type: :request do
       before { post '/api/v1/messages', params: valid_attributes, headers: headers }
 
       it 'creates a message' do
-        expect( json[ 'title' ] ).to eq( 'New message' )
+        expect( json[ 'message' ] ).to eq( 'Message created' )
+        expect( json[ 'object' ][ 'title' ] ).to eq( 'New message' )
       end
 
       it 'returns status code 201' do
