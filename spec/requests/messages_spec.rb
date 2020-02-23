@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe 'Messages API', type: :request do
   let( :user ) { create( :user ) }
   let!( :messages ) { create_list( :message, 10, author: user.name, user_id: user.id ) }
@@ -23,8 +25,8 @@ RSpec.describe 'Messages API', type: :request do
 
     context 'when the message exists' do
       it 'returns the message' do
-        expect( JSON.parse( response.body ) ).not_to be_empty
-        expect( JSON.parse( response.body )[ 'id' ] ).to eq( message_id )
+        expect( json ).not_to be_empty
+        expect( json[ 'id' ] ).to eq( message_id )
       end
 
       it 'returns status code 200' do
@@ -92,11 +94,11 @@ RSpec.describe 'Messages API', type: :request do
       before { put "/api/v1/messages/#{ message_id }", params: valid_attributes, headers: headers }
 
       it 'updates the message' do
-        expect( response.body ).to be_empty
+        expect( json[ 'message' ] ).to match( /Message updated/ )
       end
 
-      it 'returns status code 204' do
-        expect( response ).to have_http_status( 204 )
+      it 'returns status code 200' do
+        expect( response ).to have_http_status( 200 )
       end
     end
   end
@@ -104,8 +106,12 @@ RSpec.describe 'Messages API', type: :request do
   describe 'DELETE /api/v1/messages/:id' do
     before { delete "/api/v1/messages/#{ message_id }", params: {}, headers: headers }
 
-    it 'returns status code 204' do
-      expect( response ).to have_http_status( 204 )
+    it 'deletes the message' do
+      expect( json[ 'message' ] ).to match( /Message deleted/ )
+    end
+
+    it 'returns status code 200' do
+      expect( response ).to have_http_status( 200 )
     end
   end
 end

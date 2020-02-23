@@ -10,33 +10,43 @@ module Api
       end
 
       def create
-        message_params[ 'author' ] = current_user.name
-        @message = current_user.messages.create!( message_params )
-        json_response( @message, :created )
+        @message = current_user.messages.new( message_params )
+        @message.author = current_user.name
+        @message.save!
+
+        response = @message
+        json_response( response, :created )
       end
 
       def show
-        json_response( @message )
+        response = @message
+        json_response( response )
       end
 
       def update
         @message.update( message_params )
+        status = nil
         if @message.save
-          json_response( @message, :no_content )
+          response = { message: 'Message updated' }
         else
-          json_response( @message.errors.full_messages, :unprocessable_entity )
+          response = { errors: @message.errors.full_messages }
+          status = :unprocessable_entity
         end
+
+        json_response( response, status )
       end
 
       def destroy
         @message.destroy
-        json_response( 'Message deleted', :no_content )
+
+        response = { message: 'Message deleted' }
+        json_response( response )
       end
 
       private
 
       def message_params
-        params.permit( :title, :text, :author )
+        params.permit( :title, :text )
       end
 
       def fetch_message
