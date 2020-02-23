@@ -1,5 +1,3 @@
-require 'notice'
-
 class AuthenticateUser
   def initialize( name, password )
     @name = name
@@ -18,6 +16,6 @@ class AuthenticateUser
     user = User.find_by( name: name )
     return user if user && user.authenticate( password )
 
-    raise( ExceptionHandler::AuthenticationError, Notice.invalid_credentials )
+    raise( ExceptionHandler::AuthenticationError, 'Invalid credentials' )
   end
 end

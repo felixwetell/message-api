@@ -1,5 +1,3 @@
-require 'notice'
-
 module Api
   module V1
     class MessagesController < ApplicationController
@@ -16,7 +14,7 @@ module Api
         @message.author = current_user.name
         @message.save!
 
-        response = { message: Notice.message_created, object: @message }
+        response = { message: 'Message created', object: @message }
         json_response( response, :created )
       end
 
@@ -29,7 +27,7 @@ module Api
         @message.update( message_params )
         status = nil
         if @message.save
-          response = { message: Notice.message_updated }
+          response = { message: 'Message updated', object: @message }
         else
           response = { errors: @message.errors.full_messages }
           status = :unprocessable_entity
@@ -41,7 +39,7 @@ module Api
       def destroy
         @message.destroy
 
-        response = { message: Notice.message_deleted }
+        response = { message: 'Message deleted' }
         json_response( response )
       end
 

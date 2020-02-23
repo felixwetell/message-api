@@ -1,5 +1,3 @@
-require 'notice'
-
 class AuthorizeApiRequest
   def initialize( headers = {} )
     @headers = headers
@@ -17,7 +15,7 @@ class AuthorizeApiRequest
     @user ||= User.find( decoded_auth_token[ :user_id ] ) if decoded_auth_token
 
     rescue ActiveRecord::RecordNotFound => error
-      raise( ExceptionHandler::InvalidToken, ( "#{ Notice.invalid_token } #{ error.message }" ) )
+      raise( ExceptionHandler::InvalidToken, ( "Invalid token #{ error.message }" ) )
   end
 
   def decoded_auth_token
@@ -28,6 +26,6 @@ class AuthorizeApiRequest
     if headers[ 'Authorization' ].present?
       return headers[ 'Authorization' ].split( ' ' ).last
     end
-    raise( ExceptionHandler::MissingToken, Notice.missing_token )
+    raise( ExceptionHandler::MissingToken, 'Missing token' )
   end
 end
