@@ -16,7 +16,7 @@ RSpec.describe 'Users API' do
       end
       
       it 'returns success notice' do
-        expect( json[ 'message' ] ).to match(/User created successfully/)
+        expect( json[ 'message' ] ).to match( /User created successfully/ )
       end
 
       it 'returns authentication token' do
