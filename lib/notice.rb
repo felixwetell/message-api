@@ -31,4 +31,15 @@ class Notice
     'Sorry, token has expired. Please login to continue.'
   end
 
+  def self.message_created
+    'Message created'
+  end
+
+  def self.message_updated
+    'Message updated'
+  end
+
+  def self.message_deleted
+    'Message deleted'
+  end
 end
